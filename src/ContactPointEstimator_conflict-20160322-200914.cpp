@@ -41,7 +41,7 @@
 ContactPointEstimator::ContactPointEstimator(ContactPointEstimatorParams *params)
 {
 	m_params = params;
-        m_contact_point_estimate_0 = -m_params->getInitialR();
+
 	m_contact_point_estimate = -m_params->getInitialR();
 	m_r_dot = Vector3d::Zero();
 	m_Lr = Matrix3d::Zero();
@@ -75,39 +75,21 @@ void ContactPointEstimator::update(const WrenchStamped &ft_compensated)
 	// running average to filter out noise in the update of contact point estimate
 	m_r_dot = -gamma_r*(m_Lr*m_contact_point_estimate + m_cr);
 
-	m_contact_point_estimate_update = m_contact_point_estimate
+	m_contact_point_estimate = m_contact_point_estimate
 			+ m_r_dot *(1/cpe_update_frequency)
 			- kappa_r*m_contact_point_estimate*(1/cpe_update_frequency);
-			
-// 				if (sqrt(pow(m_contact_point_estimate_update(0)-m_contact_point_estimate_0(0),2)+pow(m_contact_point_estimate_update(1)-m_contact_point_estimate_0(1),2)+pow(m_contact_point_estimate_update(2)-m_contact_point_estimate_0(2),2))>0.05)
-// 	{
-//          //reset();
-// 	  m_contact_point_estimate=m_contact_point_estimate_0;
-//  	  m_r_dot = Vector3d::Zero();
-//  	  m_Lr = Matrix3d::Zero();
-//  	  m_cr = Vector3d::Zero();
-// // 	   m_r_dot = m_r_dot/100;
-// // 	  m_Lr = m_Lr/100;
-// // 	  m_cr = m_cr/100;
-// 	  
-// 	}
-// 	else{
-	  m_contact_point_estimate=m_contact_point_estimate_update;
-	//}
-
 }
 
 
 void ContactPointEstimator::reset()
-{       
-        m_contact_point_estimate_0 = -m_params->getInitialR();
+{
 	m_contact_point_estimate = -m_params->getInitialR();
 	m_r_dot = Vector3d::Zero();
 	m_Lr = Matrix3d::Zero();
 	m_cr = Vector3d::Zero();
 }
 
-PointStamped ContactPointEstimator::getEstimate() const
+PointStamped ContactPointEstimator::getEstimate(ContactPointEstimatorParams *params) const
 {
 	PointStamped contact_point;
 	contact_point.header.frame_id = m_ft_compensated.header.frame_id;
@@ -116,6 +98,13 @@ PointStamped ContactPointEstimator::getEstimate() const
 	contact_point.point.y = -m_contact_point_estimate(1);
 	contact_point.point.z = -m_contact_point_estimate(2);
 	
+	if (sqrt(pow(m_contact_point_estimate(0),2)+pow(m_contact_point_estimate(0),2)+pow(m_contact_point_estimate(0),2)>0.05))
+	{
+	 m_params = params;
+
+	m_contact_point_estimate = -m_params->getInitialR();
+	
+	}
 
 	return contact_point;
 }

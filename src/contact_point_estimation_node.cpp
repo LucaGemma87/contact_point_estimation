@@ -90,9 +90,10 @@ public:
 		topicPub_ContactPointEstimate_ = n_.advertise<geometry_msgs::PointStamped>("contact_point_estimate", 1);
 		topicPub_SurfaceNormalEstimate_ = n_.advertise<geometry_msgs::Vector3Stamped>("surface_normal_estimate", 1);
 
-        topicSub_FT_compensated_ = n_.subscribe("ft_compensated", 1, &ContactPointEstimationNode::topicCallback_FT_compensated, this);
-
-        topicSub_Twist_FT_Sensor_ = n_.subscribe("twist_ft_sensor", 1, &ContactPointEstimationNode::topicCallback_Twist_FT_Sensor, this);
+        topicSub_FT_compensated_ = n_.subscribe("/ft_sensor/ft_compensated", 1, &ContactPointEstimationNode::topicCallback_FT_compensated, this);
+          
+//            topicSub_FT_compensated_ = n_.subscribe("/left_ft_sensor/left/force_torque_sensor_filtered", 1, &ContactPointEstimationNode::topicCallback_FT_compensated, this);
+//         topicSub_Twist_FT_Sensor_ = n_.subscribe("/left_arm_twist_estimation/ft_sensor_twist", 1, &ContactPointEstimationNode::topicCallback_Twist_FT_Sensor, this);
 
         srvServer_Start_ = n_.advertiseService("start", &ContactPointEstimationNode::srvCallback_Start,
 				this);
@@ -283,6 +284,15 @@ public:
 	{
 		m_ft_mutex.lock();
 		m_ft_compensated = *msg;
+// 		m_ft_compensated.wrench.force.x=-m_ft_compensated.wrench.force.x;
+// 		m_ft_compensated.wrench.force.y=-m_ft_compensated.wrench.force.y;
+// 		m_ft_compensated.wrench.force.z=-m_ft_compensated.wrench.force.z;
+// 		
+// 		m_ft_compensated.wrench.torque.x=-m_ft_compensated.wrench.torque.x;
+// 		m_ft_compensated.wrench.torque.y=-m_ft_compensated.wrench.torque.y;
+// 		m_ft_compensated.wrench.torque.z=-m_ft_compensated.wrench.torque.z;
+		
+		
 		m_ft_mutex.unlock();
 
 		m_received_ft = true;
@@ -306,7 +316,7 @@ public:
     	getEstimatorParameters();
     	m_run_estimator = true;
     	m_cpe_thread = boost::thread(boost::bind(&ContactPointEstimationNode::CPEThreadFunction, this));
-    	m_sne_thread = boost::thread(boost::bind(&ContactPointEstimationNode::SNEThreadFunction, this));
+    	//m_sne_thread = boost::thread(boost::bind(&ContactPointEstimationNode::SNEThreadFunction, this));
 
 		return true;
 	}

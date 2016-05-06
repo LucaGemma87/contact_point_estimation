@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <launch>
   <arg name="ft_sensor_topic" default="/contact_point_estimation/ft_compensated"/>
+
   
   <node name="contact_point_estimation" pkg="contact_point_estimation" type="contact_point_estimation_node" cwd="node" respawn="false" output="screen" >
     <rosparam command="load" file="$(find contact_point_estimation)/config/contact_point_estimator.yaml"/>

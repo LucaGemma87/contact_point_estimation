@@ -4,7 +4,7 @@ kappa_r: 0.0
 beta_r: 0.2
 
 # initial contact point (in FT sensor frame)
-initial_r: [0.2, 0.2, 0.1]
+initial_r: [0.015, 0.0, 0.18]
 
 # update frequency of contact point estimator [Hz]
-cpe_update_frequency: 650.0
+cpe_update_frequency: 100.0

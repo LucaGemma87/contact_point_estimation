@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(contact_point_estimation)
 
-find_package(catkin REQUIRED COMPONENTS roscpp geometry_msgs std_srvs eigen_utils)
+find_package(catkin REQUIRED COMPONENTS roscpp geometry_msgs std_srvs eigen_utils ) 
 
-find_package(Eigen REQUIRED)
+find_package(Eigen3 REQUIRED)
 
 find_package(Boost REQUIRED COMPONENTS thread)
 
@@ -17,12 +17,13 @@ include_directories(
 link_directories(${catkin_LIBRARY_DIRS})
 
 catkin_package(
-  DEPENDS eigen
+  DEPENDS eigen3
   CATKIN_DEPENDS roscpp geometry_msgs std_srvs eigen_utils
   INCLUDE_DIRS include
-  LIBRARIES contact_point_estimator surface_normal_estimator surface_tracing_controller
+  LIBRARIES contact_point_estimator surface_normal_estimator surface_tracing_controller  
 )
 
+#
 add_executable(contact_point_estimation_node src/ContactPointEstimatorParams.cpp src/SurfaceNormalEstimatorParams.cpp src/ContactPointEstimator.cpp src/SurfaceNormalEstimator.cpp src/contact_point_estimation_node.cpp)
 target_link_libraries(contact_point_estimation_node ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 

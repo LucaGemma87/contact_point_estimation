@@ -65,13 +65,15 @@ public:
 	virtual void reset();
 
 	virtual PointStamped getEstimate() const;
-
+        Vector3d m_contact_point_estimate;
+	Vector3d m_contact_point_estimate_0;
+	Vector3d m_contact_point_estimate_update;
 protected:
 
 	ContactPointEstimatorParams *m_params;
 
 	// expressed relative to FT sensor frame
-	Vector3d m_contact_point_estimate;
+	
 	Vector3d m_r_dot;
 	Matrix3d m_Lr;
 	Vector3d m_cr;
